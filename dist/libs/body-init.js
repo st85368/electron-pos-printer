@@ -67,6 +67,28 @@ ipcRender.on('print-text', function (event, arg) {
     }
 });
 
+ipcRender.on('print-receiptItem', function (event, arg) {
+    try {
+        const text = arg.value;
+        const price = arg.price;
+        const css = arg.css;
+        const div = $(`<div><div class="font" style="text-align:left">${text}</div>
+        <div class="font" style="text-align:right">${price}</div></div>`);
+      if (css) {
+        for (const key in css) {
+            const item = css[key];
+            div.css(key, item);
+        }
+      }
+      body.append(div);
+      // sending msg
+      event.sender.send('print-receiptItem-reply', {status: true, error: null});
+    } catch (e) {
+        event.sender.send('print-receiptItem-reply', {status: false, error: e.toString()});  
+    }
+});
+
+
 ipcRender.on('print-qrCode', function (event, arg) {
     try {
         body.append(`<div id="qrCode${barcodeNumber}" style="${arg.style};text-align: ${arg.position ? '-webkit-' + arg.position : '-webkit-left'};"></div>`);

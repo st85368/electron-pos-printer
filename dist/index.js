@@ -71,10 +71,6 @@ var PosPrinter = /** @class */ (function () {
                         var errorMsg = window_print_error ? window_print_error : 'TimedOut';
                         reject(errorMsg);
                         printedState = true;
-                        // close window is open
-                        if (mainWindow) {
-                            mainWindow.close();
-                        }
                     }
                 }, timeOutPerline * data.length + 2000);
             }
@@ -153,6 +149,18 @@ var PosPrinter = /** @class */ (function () {
                                                 PrintLine(line + 1);
                                             });
                                             break;
+                                        case 'receiptItem':
+                                            sendMsg('print-receiptItem', mainWindow.webContents, obj)
+                                                .then(function (result) {
+                                                // console.log(result);
+                                                if (!result.status) {
+                                                    mainWindow.close();
+                                                    reject_1(result.error);
+                                                    return;
+                                                }
+                                                PrintLine(line + 1);
+                                            });
+                                            break;
                                         case 'barCode':
                                             sendMsg('print-barCode', mainWindow.webContents, obj)
                                                 .then(function (result) {
@@ -198,11 +206,7 @@ var PosPrinter = /** @class */ (function () {
                                             resolve({ complete: arg });
                                             printedState = true;
                                         }
-                                        // if mainWindow was created is defined
-                                        if (mainWindow) {
-                                            mainWindow.close();
-                                        }
-                                
+                                        mainWindow.close();
                                     });
                                 }
                                 else {

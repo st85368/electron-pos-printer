@@ -36,6 +36,7 @@ export interface PosPrintData {
     */
     type: PosPrintType;
     value?: string;
+    price?: string;
     css?: any;
     style?: string;
     width?: string | number;
@@ -50,7 +51,7 @@ export interface PosPrintData {
  * @type
  * @name PosPrintType
  * **/
-declare type PosPrintType  = 'text' | 'barCode' | 'qrCode' | 'image';
+declare type PosPrintType  = 'text' | 'barCode' | 'qrCode' | 'image' |'receiptItem';
 
 
 /**
@@ -150,6 +151,18 @@ export class PosPrinter {
                                         PrintLine(line + 1);
                                     });
                                 break;
+                            case 'receiptItem':
+                                    sendMsg('print-receiptItem', mainWindow.webContents, obj)
+                                        .then((result: any) => {
+                                            // console.log(result);
+                                            if (!result.status) {
+                                                mainWindow.close();
+                                                reject_1(result.error);
+                                                return;
+                                            }
+                                            PrintLine(line + 1);
+                                        });
+                                    break;
                             case 'barCode':
                                 sendMsg('print-barCode', mainWindow.webContents, obj)
                                     .then((result: any) => {

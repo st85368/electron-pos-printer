@@ -24,6 +24,7 @@ export interface PosPrintData {
     */
     type: PosPrintType;
     value?: string;
+    price?: string;
     css?: any;
     style?: string;
     width?: string | number;
@@ -37,7 +38,7 @@ export interface PosPrintData {
  * @type
  * @name PosPrintType
  * **/
-declare type PosPrintType = 'text' | 'barCode' | 'qrCode' | 'image';
+declare type PosPrintType = 'text' | 'barCode' | 'qrCode' | 'image' | 'receiptItem';
 /**
  * @class PosPrinter
  * **/
