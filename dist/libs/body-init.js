@@ -72,8 +72,8 @@ ipcRender.on('print-receiptItem', function (event, arg) {
         const text = arg.value;
         const price = arg.price;
         const css = arg.css;
-        const div = $(`<div><div class="font" style="text-align:left">${text}</div>
-        <div class="font" style="text-align:right">${price}</div></div>`);
+        const div = $(`<div><div class="font" style="float:left">${text}</div>
+        <div class="font" style="float:right">${price}</div></div>`);
       if (css) {
         for (const key in css) {
             const item = css[key];
