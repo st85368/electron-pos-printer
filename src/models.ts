@@ -16,6 +16,7 @@ export interface PosPrintOptions {
     timeOutPerLine?: number;
     width?: string;
     silent?: boolean;
+    css?:any;
     pageSize?: SizeOptions;
 }
 

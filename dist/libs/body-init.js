@@ -13,6 +13,12 @@ const image_format = ['apng', 'bmp', 'gif', 'ico', 'cur', 'jpeg', 'jpg', 'jpeg',
 
 ipcRender.on('body-init', function (event, arg) {
     body.css({width: arg.width ? arg.width : 170 , margin: arg.margin ? arg.margin : 0});
+    if (arg.css) {
+        for (const key in css) {
+            const item = css[key];
+            body.css(key, item);
+        }
+    }
     event.sender.send('body-init-reply', {status: true, error: null});
 });
 // render each line
@@ -133,6 +139,42 @@ async function renderDataToHTML(event, arg) {
                                 case 'text':
                                     rowTr.append(generateTableCell(colArg));
                                     return;
+                                case 'barCode':{
+                                    try {
+                                        rowTr.append(`<div style="width: 100%;text-align: ${arg.line.position ? arg.line.position : 'left'}"class="barcode-container" style="text-align: center;width: 100%;">
+                                            <img class="barCode${arg.lineIndex}"  style="${arg.line.style}"
+                                        jsbarcode-value="${arg.line.value}"
+                                        jsbarcode-width="${arg.line.width ? arg.line.width : 1}"
+                                        jsbarcode-height="${arg.line.height ? arg.line.height : 15}"
+                                        jsbarcode-fontsize="${arg.line.fontsize ? arg.line.fontsize : 12}"
+                                        jsbarcode-margin="0"
+                                        jsbarcode-displayvalue="${!!arg.line.displayValue}"/></div>`);
+                                        JsBarcode(`.barCode${arg.lineIndex}`).init();
+                                        // send
+                                        event.sender.send('render-line-reply', {status: true, error: null});
+                                    } catch(e) {
+                                        event.sender.send('render-line-reply', {status: false, error: e.toString()});
+                                    }
+                                    return;
+                                }
+                                case 'qrCode':
+                                    try {
+                                        rowTr.append(`<div id="qrCode${arg.lineIndex}" style="${arg.line.style};text-align: ${arg.line.position ? '-webkit-' + arg.line.position : '-webkit-left'};"></div>`);
+                                        new QRCode(document.getElementById(`qrCode${arg.lineIndex}`), {
+                                          text: arg.line.value,
+                                          width: arg.line.width ? arg.line.width : 1,
+                                          height: arg.line.height ? arg.line.height : 15,
+                                          colorDark: '#000000',
+                                          colorLight: '#ffffff',
+                                          correctLevel: QRCode.CorrectLevel.H
+                                        });
+                                       // $(`#qrcode${barcodeNumber}`).attr('style',arg.style);
+                                       event.sender.send('render-line-reply', {status: true, error: null});
+                                    } catch(e) {
+                                        event.sender.send('render-line-reply', {status: false, error: e.toString()});
+                                    }
+                                return;
+                         
                             }
                         } else {
                             const th = $(`<td>${colArg}</td>`);
