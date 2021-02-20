@@ -14,8 +14,8 @@ const image_format = ['apng', 'bmp', 'gif', 'ico', 'cur', 'jpeg', 'jpg', 'jpeg',
 ipcRender.on('body-init', function (event, arg) {
     body.css({width: arg.width ? arg.width : 170 , margin: arg.margin ? arg.margin : 0});
     if (arg.css) {
-        for (const key in css) {
-            const item = css[key];
+        for (const key in arg.css) {
+            const item = arg.css[key];
             body.css(key, item);
         }
     }
